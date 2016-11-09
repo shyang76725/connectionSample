@@ -1,0 +1,53 @@
+<!-- Project Name 可以自定議 -->
+<project name="connectionManager" basedir="." >
+	<target name="setProperties">
+		<property environment="env" />
+		<property file="build.PROPERTIES" />
+		<!-- 這支ant 需要載入哪一個properties當作執行ant的屬性 -->
+		<path id="classpath">
+			<!-- 編譯過程當中，需參照的classpath -->
+			<fileset dir="./LIB">
+				<include name="**/*.jar" />
+			</fileset>
+			<pathelement path="./WebContent/WEB-INF/classes"/>
+		</path>
+	</target>
+	<target name="prepareDir" depends="setProperties">
+		<!-- 此target執行前會執行setProperties 參照 depends屬性 -->
+		<!-- 編譯前，先建置編譯資料夾 -->
+		<mkdir dir="./WebContent/WEB-INF/classes" />
+		<mkdir dir="./TESTREPORT" />
+		<delete includeemptydirs="true">
+			<!-- 編譯前，把已存在的檔案刪除，並排外哪些不刪的程式 -->
+			<fileset dir="./WebContent/WEB-INF/classes">
+				<include name="**/*.class" />
+			</fileset>
+		</delete>
+	</target>
+	<target name="Compiler" description="" depends="prepareDir">
+		<javac destdir="./WebContent/WEB-INF/classes" debug="true" includeantruntime="false" deprecation="false" optimize="false" failonerror="true" encoding="UTF-8">
+			<src path="./src" />
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+	<target name="UnitTest" description="" depends="Compiler">
+		<junit printsummary="yes">
+			<classpath refid="classpath" />
+ 
+			<formatter type="xml" />
+			<batchtest todir="./TESTREPORT">
+				<fileset dir="./src/com/quanta/bu12/qoca/test">
+					<include name="**/**.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+		<!--
+		<junitreport todir="./TESTREPORT">
+			<fileset dir="./TESTREPORT">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="./TESTREPORT/html" />
+		</junitreport>
+		-->
+	</target>
+</project>
