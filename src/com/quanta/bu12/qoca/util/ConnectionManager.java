@@ -176,6 +176,8 @@ public class ConnectionManager extends util{
 		int data = -1;
 		List rows = queryForList(sql, obj);
 		if (rows.isEmpty()){
+			return 0;
+		}else{
 			Iterator it = rows.iterator();
 			if (it.hasNext()) {
 				Map dataMap = (Map) it.next();
